@@ -55,6 +55,15 @@ class AdvertController extends Controller {
     }
 
     public function addAction(Request $request) {
+        //On récupère le service
+        $antispam = $this->container->get('oc_platform.antispam');
+        //On part du principe que $text contient le texte d'un message quelconque
+        $text = '...';
+        if($antispam->isSpam($text)){
+            throw new \Exception('Votre message a été détecté comme spam !');
+        }
+        
+        
         //On va ici gérer si le formulaire a été soumis ou non
         //Si la requête est en post, c'est que le formulaire a été soumis
         if ($request->isMethod('POST')) {

@@ -38,8 +38,8 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     #Ajoutés par moi-même
-    globals:
-        webmaster: "%app_webmaster%"
+    #globals:
+    #    webmaster: "%app_webmaster%"
 
 # Doctrine Configuration
 doctrine:

@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller; //Ne pas oublier ce us
 use Symfony\Component\HttpFoundation\Request; //Pour récupérer un objet Request
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use OC\PlatformBundle\Entity\Advert; //Ne pas oublier ce use pour pouvoir utiliser notre entité Advert
+
 class AdvertController extends Controller {
 
     public function indexAction($page) {
@@ -44,38 +46,51 @@ class AdvertController extends Controller {
     }
 
     public function viewAction($id) {
-        //Ici on récupèrera l'annonce correspondante à l'id $id
-        $advert = array(
-            'title' => 'Recherche développeur Symfony',
-            'id' => $id,
-            'author' => 'Alexandre',
-            'content' => 'Nous recherchons un développeur Symfony2 début sur Lyon. Blabla...',
-            'date' => new \Datetime()
-        );
+        //On récupère le repository
+        //$repository = $this->getDoctrine()->getManager()->getRepository('OCPlatformBundle:Advert');
+        
+        //On récupère l'entite correspondante à l'id $id
+        //$advert = $repository->find($id); 
+        
+        //Ces 2 méthodes sont les mêmes
+        $advert = $this->getDoctrine()->getManager()->find('OCPlatformBundle:Advert', $id);
+        $advert2 = $this->getDoctrine()->getManager()->find('OC\PlatformBundle\Entity\Advert', $id);
+        
+        //$advert est donc une instance de OC\PlatformBundle\Entity\Advert
+        //Si c'est null, l'id $id n'existe pas
+        if($advert === null){
+            throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
+        }
+        
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array('advert' => $advert));
     }
 
     public function addAction(Request $request) {
-        //On récupère le service
-        $antispam = $this->container->get('oc_platform.antispam');
-        //On part du principe que $text contient le texte d'un message quelconque
-        $text = 'gkqsfsbgvjsfwbghkdfsbvhjxcfjkvbbdfhbjqdfkbxcvwnvb <sf:gv bsfdv bkxc bvhksd bfh';
-        if($antispam->isSpam($text)){
-            throw new \Exception('Votre message a été détecté comme spam !');
-        }
+        //Création de l'entité
+        $advert = new Advert();
+        $advert->setTitle('Recherche développeur Symfony');
+        $advert->setAuthor('Alexandre');
+        $advert->setContent('Nous recherchons un développeur Symfony débutant sur Lyon. Blabla...');
+        //On peut ne pas définir ni la date ni la publication, car ces attributs sont définit automatiquement dans le constructeur
         
+        //On récupère l'EntityManager
+        $em = $this->getDoctrine()->getManager();
         
-        //On va ici gérer si le formulaire a été soumis ou non
+        //Étape 1 : On "persiste" l'entité
+        $em->persist($advert);
+        
+        //Étape 2 : On "flush" tout ce qui a été persisté avant
+        $em->flush();
+        
         //Si la requête est en post, c'est que le formulaire a été soumis
         if ($request->isMethod('POST')) {
-            //On s'occupera plus tard, ici, de la création et de la gestion du formulaire
-            $request->getSession()->getFlashBag()->add('notice', 'L\'annonce sera enregistrée quand on maîtrisera la BDD');
+            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée');
             //Puis on redirige vers la visualisation de cette annonce
-            return $this->redirectToRoute('oc_platform_home');
+            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
         }
 
         //Si on n'est pas en POST, alors on affiche le formulaire
-        return $this->render('OCPlatformBundle:Advert:add.html.twig');
+        return $this->render('OCPlatformBundle:Advert:add.html.twig', array('advert' => $advert));
     }
 
     public function editAction($id, Request $request) {

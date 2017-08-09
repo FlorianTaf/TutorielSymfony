@@ -14,8 +14,9 @@ class AdvertController extends Controller {
         //On ne sait pas combien de pages il y a, mais une page doit être supérieur ou égale à 1
         if ($page < 1) {
             //On déclenche une exception NotFoundHttpException, qui affichera une page d'erreur 404 (qu'on pourra personnaliser)
-            throw new NotFoundHttpException("Page '" . $page . "'inexistante");
+            throw new NotFoundHttpException("Page '" . $page . "' inexistante");
         }
+        
         $listAdverts = array(
             array(
                 'title' => 'Recherche développpeur Symfony',
@@ -58,7 +59,7 @@ class AdvertController extends Controller {
         //On récupère le service
         $antispam = $this->container->get('oc_platform.antispam');
         //On part du principe que $text contient le texte d'un message quelconque
-        $text = '...';
+        $text = 'gkqsfsbgvjsfwbghkdfsbvhjxcfjkvbbdfhbjqdfkbxcvwnvb <sf:gv bsfdv bkxc bvhksd bfh';
         if($antispam->isSpam($text)){
             throw new \Exception('Votre message a été détecté comme spam !');
         }
@@ -68,9 +69,9 @@ class AdvertController extends Controller {
         //Si la requête est en post, c'est que le formulaire a été soumis
         if ($request->isMethod('POST')) {
             //On s'occupera plus tard, ici, de la création et de la gestion du formulaire
-            $request->getSession()->getFlashBag()->add('notice', 'L\'annonce a bien été enregistré');
+            $request->getSession()->getFlashBag()->add('notice', 'L\'annonce sera enregistrée quand on maîtrisera la BDD');
             //Puis on redirige vers la visualisation de cette annonce
-            return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+            return $this->redirectToRoute('oc_platform_home');
         }
 
         //Si on n'est pas en POST, alors on affiche le formulaire
@@ -81,8 +82,9 @@ class AdvertController extends Controller {
         //Ici, on récupèrera l'annonce correspondant à l'id
         //Même mécanisme que pour l'ajout
         if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'L\'annonce a bien été modifié');
-            return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+            $session = $request->getSession();
+            $session->getSession()->getFlashBag()->add('notice', 'L\'annonce n°' . $id . ' sera modifiée quand on maîtrisera la BDD.');
+            return $this->redirectToRoute('oc_platform_home');
         }
         
         $advert = array(
@@ -97,11 +99,14 @@ class AdvertController extends Controller {
         ));
     }
 
-    public function deleteAction($id) {
+    public function deleteAction($id, Request $request) {
         //Ici on récupèrera l'annonce correspondant à l'id
         //Ici on gèrera la suppression de l'annonce en question
-
-        return $this->render('OCPlatformBundle:Advert:delete.html.twig');
+        $session = $request->getSession();
+        $session->getFlashBag()->add('notice', 'L\'annonce n°' . $id . ' sera supprimée quand on maîtrisera la BDD.');
+        
+        //return $this->render('OCPlatformBundle:Advert:delete.html.twig');
+        return $this->redirectToRoute('oc_platform_home');
     }
 
     public function menuAction() {
@@ -118,5 +123,4 @@ class AdvertController extends Controller {
                     'listAdverts' => $listAdverts
         ));
     }
-
 }

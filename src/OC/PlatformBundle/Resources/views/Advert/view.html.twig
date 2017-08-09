@@ -1,6 +1,7 @@
 {# empty Twig template #}
 {# src/OC/PlatformBundle/Resources/view/Advert/view.html.twig #}
 
+{# On a remplacé OCPlatformBundle par CoreBundle #}
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
@@ -8,7 +9,7 @@
 {% endblock %}
 
 {% block ocplatform_body %}
-    <h2>{{ advert.title }}</h2>
+    <h2>{{ advert.title }} (offre n°{{ advert.id}})</h2>
     <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
     <div class="well">

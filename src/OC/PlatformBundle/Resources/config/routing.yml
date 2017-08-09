@@ -5,7 +5,7 @@ oc_platform_home:
     path:    /{page}
     defaults: 
         _controller: OCPlatformBundle:Advert:index 
-        page:        1
+        page:    1
     requirements:
         page: \d* 
         
@@ -19,7 +19,7 @@ oc_platform_view:
 oc_platform_add:
     path:    /add
     defaults:
-        _controller: OCPlatformBundle:Advert:add 
+        _controller: OCPlatformBundle:Advert:add
 oc_platform_edit:
     path:    /edit/{id}
     defaults:
@@ -32,7 +32,11 @@ oc_platform_delete:
         _controller: OCPlatformBundle:Advert:delete
     requirements:
         id: \d+
-    
+
+oc_platform_accueil_core:
+    path: ../
+    defaults:
+        _controller: OCPlatformBundle:Advert:retourAccueilCore
     
     
     

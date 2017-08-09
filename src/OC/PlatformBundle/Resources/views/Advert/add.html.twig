@@ -1,8 +1,7 @@
 {# empty Twig template #}
 {# src/OC/PlatformBundle/Resources/views/Advert/add.html.twig #}
 
-{% extends "OCPlatformBundle::layout.html.twig" %} {#On ne met pas OCPlatformBundle car notre layout n'est plus dans notre bundle
-                                   mais dans le répertoire app/Resources/views #}
+{% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
     Ajouter une annonce - {{ parent() }}   
@@ -19,14 +18,14 @@
 
     <p>
         {# On va pour l'instant renvoyer sur la page d'accueil au bouton valider, car on ne gère pas encore le formulaire #}
-        <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
+        <a href="{{ path('oc_platform_add') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-edit"></i>
             Ajouter l'annonce
         </a>
             
         <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i>
-            Retour à la page d'accueil
+            Retour à l'accueil de la plateforme
         </a>
     </p>
 {% endblock %}

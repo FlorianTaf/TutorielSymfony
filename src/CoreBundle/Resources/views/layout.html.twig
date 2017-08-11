@@ -1,5 +1,5 @@
 {# empty Twig template #}
-{# app/Resources/views/layout.html.twig #}
+{# app/Resources/layout.html.twig #}
 
 <!DOCTYPE html>
 <html>
@@ -18,15 +18,17 @@
     <body>
         <div class="container">
             <div id="header" class="jumbotron">
+                {% block core_header %}
                 <h1>Page d'accueil principale du site</h1>
                 <p>
                     C'est le 1er exercice sérieux sur Symfony.
                 </p>
                 <p>
-                    <a class="btn btn-primary btn-lg" href="{{ path('core_platform_accueil') }}">
+                    <a class="btn btn-primary btn-lg" href="{{ path('oc_platform_home') }}">
                         Aller sur la plateforme d'annonces. »
                     </a>
                 </p>
+                {% endblock %}
             </div>
 
             {# On affiche les messages flash apprès la tentative d'accès à la page de contact #}
@@ -35,15 +37,17 @@
                     <p><span style=" color: red;">Message flash : {{ message }}</span></p>
                 {% endfor %}
             </div>
-
+            
+            {% block core_menu_gauche_block %}
             <div id="menu" class="col-md-3">
-                <h4>Formulaire de contact</h4>
+                <h3>Formulaire de contact</h4>
                 <ul class="nav nav-pills nav-stacked">
                     <li><a href="{{ path('core_contact') }}">Contact</a></li>
                 </ul>
-                <h4>Dernières annonces</h4>
+                <h3>Dernières annonces</h4>
                 {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
             </div>
+            {% endblock %}
 
             <hr>
 

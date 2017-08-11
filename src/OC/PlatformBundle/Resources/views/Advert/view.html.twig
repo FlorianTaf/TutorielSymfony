@@ -9,12 +9,52 @@
 {% endblock %}
 
 {% block ocplatform_body %}
+    <div style="float: left; margin-right: 1em;">
+        {# On vérifie qu'une image soit bien associée à l'article #}
+        {% if advert.image is not null %}
+            <img src="{{ advert.image.url }}" alt=" {{ advert.image.alt }}" height="60">
+        {% endif %}
+    </div>
     <h2>{{ advert.title }} (offre n°{{ advert.id}})</h2>
     <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
     <div class="well">
         {{ advert.content }}
     </div>
+
+    {# On affiche toutes les candidatures liées à l'annonce #}
+    <hr>
+    <h2>
+        Candidatures pour l'annonce n° {{ advert.id }}.
+    </h2>
+    {% for application in listApplications %}
+        <div class="well">
+            Postulant : {{ application.author }} <br>
+            Contenu : {{ application.content }} <br>
+            Date de postulation : {{ application.date|date('d/m/Y') }}
+        </div>
+    {% endfor %}
+
+    {# Affichage des catégories de l'annonce #}
+    {% if not advert.categories.empty %}
+        <p>
+            <span style = "font-weight: bold;">Cette annonce est parue dans les catégories suivantes : </br></span>
+                {% for category in advert.categories %}
+                    {{ category.name }}, portant l'id n° {{ category.id }} {% if not loop.last %},</br> {% endif %}
+            {% endfor %}
+        </p>
+    {% endif %}
+    {# Affichage des compétences de l'annonce #}
+    {% if listAdvertSkills|length > 0 %}
+        <div>
+            <p>
+                <span style = "font-weight: bold;">Cette annonce requiert les compétences suivantes : </br></span>
+                {% for advertSkill in listAdvertSkills %}
+                    {{ advertSkill.skill.name }}, niveau : {{ advertSkill.level }} {% if not loop.last %},</br>{% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    {% endif %}
 
     <p>
         <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
@@ -28,6 +68,12 @@
         <a href="{{ path('oc_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
             <i class="glyphicon glyphicon-trash"></i>
             Supprimer l'annonce
+        </a>
+
+        {# Test du bouton pour modifier l'image#}
+        <a href="{{ path('oc_platform_edit_image', {'id': advert.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-edit"></i>
+            Modifier l'image
         </a>
     </p>
 {% endblock %}

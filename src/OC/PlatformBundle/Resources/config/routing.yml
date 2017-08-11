@@ -37,6 +37,11 @@ oc_platform_accueil_core:
     path: ../
     defaults:
         _controller: OCPlatformBundle:Advert:retourAccueilCore
+
+oc_platform_edit_image:
+    path: /advert/{id}/modifImage
+    defaults:
+        _controller: OCPlatformBundle:Advert:editImage
     
     
     

@@ -23,8 +23,7 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
         // On fait une jointure avec l'entité Category avec pour alias « c »
         $qb
             ->innerJoin('a.categories', 'c')
-            ->addSelect('c')
-        ;
+            ->addSelect('c');
 
         // Puis on filtre sur le nom des catégories à l'aide d'un IN
         $qb->where($qb->expr()->in('c.name', $categoryNames));
@@ -34,6 +33,5 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->getQuery()
             ->getResult();
-
     }
 }

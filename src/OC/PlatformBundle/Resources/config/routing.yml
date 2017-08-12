@@ -42,9 +42,16 @@ oc_platform_edit_image:
     path: /advert/{id}/modifImage
     defaults:
         _controller: OCPlatformBundle:Advert:editImage
+
+oc_platform_annonce_reseau:
+    path: /voirAnnoncesReseau
+    defaults:
+        _controller: OCPlatformBundle:Advert:voirAnnoncesReseau
     
-    
-    
+oc_platform_last_candidatures:
+    path: /voirLastCandid
+    defaults:
+         _controller: OCPlatformBundle:Advert:voirLastCandid
     
     
     

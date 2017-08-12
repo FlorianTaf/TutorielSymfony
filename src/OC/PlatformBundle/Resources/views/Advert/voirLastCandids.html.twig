@@ -1,0 +1,23 @@
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+    Aperçu des 3 dernières candidatures - {{ parent() }}
+{% endblock %}
+
+{% block ocplatform_body %}
+    <h2>Aperçu des candidatures</h2>
+
+    <ul class="nav nav-pills nav-stacked">
+        {% for candid in lastCandids %}
+            <li>Le postulant est : <strong>{{ candid.author }}</strong>, avec comme message <strong>{{ candid.content }}</strong>
+            , pour l'offre <strong>{{ candid.advert.title }}</strong> (offre n°<strong>{{ candid.advert.id }}</strong>)</li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour à l'accueil de la plateforme
+        </a>
+    </p>
+{% endblock %}

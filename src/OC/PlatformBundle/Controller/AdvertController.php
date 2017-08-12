@@ -13,7 +13,7 @@ use OC\PlatformBundle\Entity\Advert; //Ne pas oublier ce use pour pouvoir utilis
 use OC\PlatformBundle\Entity\Image; //Ne pas oublier ce use pour pouvoir utiliser notre entité Image
 use OC\PlatformBundle\Entity\Application; //Ne pas oublier ce use pour pouvoir utiliser notre entité Application
 use OC\PlatformBundle\Entity\AdvertSkill; //Ne pas oublier ce use pour pouvoir utiliser notre entité AdvertSkill
-use OC\PlatformBundle\Repository;
+use OC\PlatformBundle\Repository\AdvertRepository;
 
 class AdvertController extends Controller
 {
@@ -26,28 +26,10 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("Page '" . $page . "' inexistante");
         }
 
-        $listAdverts = array(
-            array(
-                'title' => 'Recherche développpeur Symfony',
-                'id' => 5,
-                'author' => 'Alexandre',
-                'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-                'date' => new \Datetime()),
-            array(
-                'title' => 'Mission de webmaster',
-                'id' => 6,
-                'author' => 'Hugo',
-                'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-                'date' => new \Datetime()),
-            array(
-                'title' => 'Offre de stage webdesigner',
-                'id' => 7,
-                'author' => 'Mathieu',
-                'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
-                'date' => new \Datetime())
-        );
-        //On récupèrera ici, plus tard, la liste des annonces, puis on la passera au template
-        //On retourne pour l'instant juste le template
+        $em = $this->getDoctrine()->getManager();
+        $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
+
+        //On retourne  le template
         //return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => array()));
         return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => $listAdverts));
     }
@@ -68,10 +50,10 @@ class AdvertController extends Controller
         }
 
         //On récupère la liste des candidatures de cette annonce
+
         $listApplications = $em
             ->getRepository('OCPlatformBundle:Application')
-            ->findBy(array('advert' => $advert), array(), 1, 0);
-
+            ->findBy(array('advert' => $advert));
 
         //On récupère la liste des AdvertSkill
         $listAdvertSkills = $em
@@ -223,13 +205,8 @@ class AdvertController extends Controller
 
     public function menuAction()
     {
-        //Pour le moment on fixe en dur la liste, mais par la suite on la récupèrera de la BDD
-
-        $listAdverts = array(
-            array('id' => 5, 'title' => 'Recherche développeur Symfony'),
-            array('id' => 6, 'title' => 'Mission de webmaster'),
-            array('id' => 7, 'title' => 'Offre de stage webdesigner')
-        );
+        $em = $this->getDoctrine()->getManager();
+        $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findBy(array(), array(), 2, 0);
 
         return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
             //Tout l'intérêt est ici: le contrôleur passe les variables nécessaires au template
@@ -259,6 +236,29 @@ class AdvertController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('oc_platform_view', array('id' => $id));
+    }
+
+    /**
+     * Récupérer les candidatures concernant le réseau et l'intégration
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function voirAnnoncesReseauAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repositoryListCategories = $em->getRepository('OCPlatformBundle:Advert');
+        $listCategories = $repositoryListCategories->getAdvertWithCategories(array('Integration', 'Réseau'));
+
+        return $this->render('OCPlatformBundle:Advert:voirAnnoncesReseau.html.twig', array('listCategories' => $listCategories));
+    }
+
+    /**
+     * Récupérer les 2 dernières candidatures, toutes confondues avec leur annonce associée
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function voirLastCandidAction(){
+        $em = $this->getDoctrine()->getManager();
+        $lastCandids = $em->getRepository('OCPlatformBundle:Application')->getApplicationsWithAdvert(3);
+        return $this->render('OCPlatformBundle:Advert:voirLastCandids.html.twig', array('lastCandids' => $lastCandids));
     }
 
 }

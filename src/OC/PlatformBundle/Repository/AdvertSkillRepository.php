@@ -10,4 +10,5 @@ namespace OC\PlatformBundle\Repository;
  */
 class AdvertSkillRepository extends \Doctrine\ORM\EntityRepository
 {
+
 }

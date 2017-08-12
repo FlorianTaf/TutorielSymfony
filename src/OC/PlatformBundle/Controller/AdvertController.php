@@ -4,6 +4,7 @@
 
 namespace OC\PlatformBundle\Controller;
 
+use OC\PlatformBundle\OCPlatformBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller; //Ne pas oublier ce use !!!
 use Symfony\Component\HttpFoundation\Request; //Pour récupérer un objet Request
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -12,10 +13,13 @@ use OC\PlatformBundle\Entity\Advert; //Ne pas oublier ce use pour pouvoir utilis
 use OC\PlatformBundle\Entity\Image; //Ne pas oublier ce use pour pouvoir utiliser notre entité Image
 use OC\PlatformBundle\Entity\Application; //Ne pas oublier ce use pour pouvoir utiliser notre entité Application
 use OC\PlatformBundle\Entity\AdvertSkill; //Ne pas oublier ce use pour pouvoir utiliser notre entité AdvertSkill
+use OC\PlatformBundle\Repository;
 
-class AdvertController extends Controller {
+class AdvertController extends Controller
+{
 
-    public function indexAction($page) {
+    public function indexAction($page)
+    {
         //On ne sait pas combien de pages il y a, mais une page doit être supérieur ou égale à 1
         if ($page < 1) {
             //On déclenche une exception NotFoundHttpException, qui affichera une page d'erreur 404 (qu'on pourra personnaliser)
@@ -48,7 +52,8 @@ class AdvertController extends Controller {
         return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => $listAdverts));
     }
 
-    public function viewAction($id) {
+    public function viewAction($id)
+    {
         //Equivalent des 2 méthodes juste en-dessous
         $em = $this->getDoctrine()->getManager();
         $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
@@ -64,21 +69,24 @@ class AdvertController extends Controller {
 
         //On récupère la liste des candidatures de cette annonce
         $listApplications = $em
-                ->getRepository('OCPlatformBundle:Application')
-                ->findBy(array('advert' => $advert));
+            ->getRepository('OCPlatformBundle:Application')
+            ->findBy(array('advert' => $advert), array(), 1, 0);
+
+
         //On récupère la liste des AdvertSkill
         $listAdvertSkills = $em
-                ->getRepository('OCPlatformBundle:AdvertSkill')
-                ->findBy(array('advert' => $advert));
+            ->getRepository('OCPlatformBundle:AdvertSkill')
+            ->findBy(array('advert' => $advert), array(), 3, 0);
 
         //On renvoie avec l'annonce et les candidatures liées à cette annonce
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-                    'advert' => $advert,
-                    'listApplications' => $listApplications,
-                    'listAdvertSkills' => $listAdvertSkills));
+            'advert' => $advert,
+            'listApplications' => $listApplications,
+            'listAdvertSkills' => $listAdvertSkills));
     }
 
-    public function addAction(Request $request) {
+    public function addAction(Request $request)
+    {
         //Création de l'entité Advert
         $advert = new Advert();
         $advert->setTitle('Recherche développeur Symfony');
@@ -150,7 +158,8 @@ class AdvertController extends Controller {
         return $this->render('OCPlatformBundle:Advert:add.html.twig', array('advert' => $advert));
     }
 
-    public function editAction($id, Request $request) {
+    public function editAction($id, Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         //On récupère l'annonce $id
         $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
@@ -178,11 +187,12 @@ class AdvertController extends Controller {
         }
 
         return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-                    'advert' => $advert
+            'advert' => $advert
         ));
     }
 
-    public function deleteAction($id, Request $request) {
+    public function deleteAction($id, Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
 
         // On récupère l'annonce $id
@@ -211,7 +221,8 @@ class AdvertController extends Controller {
         return $this->redirectToRoute('oc_platform_view', array('id' => $id));
     }
 
-    public function menuAction() {
+    public function menuAction()
+    {
         //Pour le moment on fixe en dur la liste, mais par la suite on la récupèrera de la BDD
 
         $listAdverts = array(
@@ -221,12 +232,13 @@ class AdvertController extends Controller {
         );
 
         return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
-                    //Tout l'intérêt est ici: le contrôleur passe les variables nécessaires au template
-                    'listAdverts' => $listAdverts
+            //Tout l'intérêt est ici: le contrôleur passe les variables nécessaires au template
+            'listAdverts' => $listAdverts
         ));
     }
 
-    public function editImageAction($id) {
+    public function editImageAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         //On récupère l'annonce

@@ -15,7 +15,7 @@
             <img src="{{ advert.image.url }}" alt=" {{ advert.image.alt }}" height="60">
         {% endif %}
     </div>
-    <h2>{{ advert.title }} (offre n°{{ advert.id}})</h2>
+    <h2>{{ advert.title }} (offre n°{{ advert.id }})</h2>
     <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
     <div class="well">
@@ -38,9 +38,9 @@
     {# Affichage des catégories de l'annonce #}
     {% if not advert.categories.empty %}
         <p>
-            <span style = "font-weight: bold;">Cette annonce est parue dans les catégories suivantes : </br></span>
-                {% for category in advert.categories %}
-                    {{ category.name }}, portant l'id n° {{ category.id }} {% if not loop.last %},</br> {% endif %}
+            <span style="font-weight: bold;">Cette annonce est parue dans les catégories suivantes : </br></span>
+            {% for category in advert.categories %}
+                {{ category.name }}, portant l'id n° {{ category.id }} {% if not loop.last %},</br> {% endif %}
             {% endfor %}
         </p>
     {% endif %}
@@ -48,7 +48,7 @@
     {% if listAdvertSkills|length > 0 %}
         <div>
             <p>
-                <span style = "font-weight: bold;">Cette annonce requiert les compétences suivantes : </br></span>
+                <span style="font-weight: bold;">Cette annonce requiert les compétences suivantes : </br></span>
                 {% for advertSkill in listAdvertSkills %}
                     {{ advertSkill.skill.name }}, niveau : {{ advertSkill.level }} {% if not loop.last %},</br>{% endif %}
                 {% endfor %}
@@ -74,6 +74,10 @@
         <a href="{{ path('oc_platform_edit_image', {'id': advert.id}) }}" class="btn btn-default">
             <i class="glyphicon glyphicon-edit"></i>
             Modifier l'image
+        </a>
+        <a href="{{ path('oc_platform_postuler', {'id': advert.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-edit"></i>
+            Postuler à l'annonce
         </a>
     </p>
 {% endblock %}

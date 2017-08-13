@@ -74,6 +74,7 @@ class AdvertController extends Controller
         $advert->setTitle('Recherche développeur Symfony');
         $advert->setAuthor('Alexandre');
         $advert->setContent('Nous recherchons un développeur Symfony débutant sur Lyon. Blabla...');
+        $advert->setEmail('advert@advert.com');
         //On peut ne pas définir ni la date ni la publication, car ces attributs sont définit automatiquement dans le constructeur
         //Création de l'entité Image
         $image = new Image();
@@ -89,10 +90,12 @@ class AdvertController extends Controller
         $application1 = new Application();
         $application1->setAuthor('Marine');
         $application1->setContent("J'ai toutes les qualités requises.");
+        $application1->setEmail('marina@marine.com');
         //Création d'une 2ème candidature
         $application2 = new Application();
         $application2->setAuthor('Pierre');
         $application2->setContent("Je suis très motivé.");
+        $application2->setEmail('pierre@pierre.com');
 
         //On lie les candidatures à l'annonce
         $application1->setAdvert($advert);
@@ -149,18 +152,6 @@ class AdvertController extends Controller
         if ($advert === null) {
             throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
         }
-
-        //La méthode findAll retourne toutes les catégories de la BDD
-        $listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
-
-        //On boucle sur les catégories pour les lier à l'annonce
-        foreach ($listCategories as $category) {
-            $advert->addCategory($category);
-        }
-
-        //Pour persister le changement dans le relation, on doit persisté l'entité propriétaire, donc Advert ici
-        //Mais inutile de persister ici car on l'a récupéré depuis Doctrine
-        $em->flush();
 
         if ($request->isMethod('POST')) {
             $session = $request->getSession();
@@ -255,10 +246,27 @@ class AdvertController extends Controller
      * Récupérer les 2 dernières candidatures, toutes confondues avec leur annonce associée
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function voirLastCandidAction(){
+    public function voirLastCandidAction()
+    {
         $em = $this->getDoctrine()->getManager();
         $lastCandids = $em->getRepository('OCPlatformBundle:Application')->getApplicationsWithAdvert(3);
         return $this->render('OCPlatformBundle:Advert:voirLastCandids.html.twig', array('lastCandids' => $lastCandids));
     }
 
+    public function postulerAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+
+        $application = new Application();
+        $application->setAuthor('Postulant1');
+        $application->setContent('Content1');
+        $application->setAdvert($advert);
+
+        $em->persist($application);
+
+        $em->flush();
+
+        return $this->redirectToRoute('oc_platform_view', array('id' => $id, 'compteur' => $advert->getNbApplications()));
+    }
 }

@@ -52,7 +52,11 @@ oc_platform_last_candidatures:
     path: /voirLastCandid
     defaults:
          _controller: OCPlatformBundle:Advert:voirLastCandid
-    
+
+oc_platform_postuler:
+    path: /advert/{id}/postuler
+    defaults:
+        _controller: OCPlatformBundle:Advert:postuler
     
     
     

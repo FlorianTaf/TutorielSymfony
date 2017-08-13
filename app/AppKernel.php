@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             //Le générateur a généré la ligne suivante
             new OC\PlatformBundle\OCPlatformBundle(),
             new CoreBundle\CoreBundle(),
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

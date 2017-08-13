@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="oc_application")
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\ApplicationRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Application
 {
@@ -47,9 +48,16 @@ class Application
      */
     private $date;
 
-    public function __construct() {
+    /**
+     * @ORM\Column(name="email", type="string", length=255)
+     */
+    private $email;
+
+    public function __construct()
+    {
         $this->date = new \DateTime();
     }
+
     /**
      * Get id
      *
@@ -154,5 +162,45 @@ class Application
     public function getAdvert()
     {
         return $this->advert;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function increase()
+    {
+        $this->getAdvert()->increaseApplication();
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function decrease()
+    {
+        $this->getAdvert()->decreaseApplication();
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Application
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

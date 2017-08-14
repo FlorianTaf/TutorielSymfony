@@ -2,18 +2,18 @@
 {# src/OC/PlatformBundle/Resources/views/Advert/index.html.twig #}
 
 {# On a remplacé OCPlatformBundle par CoreBundle #}
-{%extends "OCPlatformBundle::layout.html.twig" %}
+{% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
     Accueil - {{ parent() }}
 {% endblock %}
 
 {% block ocplatform_body %}
-    
+
     {# Message flash qui s'affiche si on a supprimé une annonce #}
     <div>
         {% for message in app.session.flashbag.get('info') %}
-            <p><span style ="color: red;">Message flash : {{ message }}</span></p>
+            <p><span style="color: red;">Message flash : {{ message }}</span></p>
         {% endfor %}
     </div>
 
@@ -26,10 +26,14 @@
                     {{ advert.title }}
                 </a>
                 par {{ advert.author }},
-                le {{advert.date|date('d/m/Y') }}
+                le {{ advert.date|date('d/m/Y') }}
             </li>
         {% else %}
             <li>Pas (encore) d'annonces</li>
-            {% endfor %}
+        {% endfor %}
     </ul>
+
+    <div class="navigation">
+        {{ knp_pagination_render(listAdverts) }}
+    </div>
 {% endblock %}

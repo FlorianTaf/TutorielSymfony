@@ -3,6 +3,7 @@
 namespace OC\PlatformBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * AdvertRepository
@@ -12,26 +13,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * @param array $categoryNames
-     * @return array
-     */
-    public function getAdvertWithCategories(array $categoryNames)
+    public function getAdverts()
     {
-        $qb = $this->createQueryBuilder('a');
+        $query = $this->createQueryBuilder('a')
+            //Jointure sur l'attribut image
+            ->leftJoin('a.image', 'i')
+            ->addSelect('i')
+            //Jointure sur l'attribut categories
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            ->orderBy('a.date', 'desc')
+            ->getQuery();
 
-        // On fait une jointure avec l'entité Category avec pour alias « c »
-        $qb
-            ->innerJoin('a.categories', 'c')
-            ->addSelect('c');
-
-        // Puis on filtre sur le nom des catégories à l'aide d'un IN
-        $qb->where($qb->expr()->in('c.name', $categoryNames));
-        // La syntaxe du IN et d'autres expressions se trouve dans la documentation Doctrine
-
-        // Enfin, on retourne le résultat
-        return $qb
-            ->getQuery()
-            ->getResult();
+        //On ne retourne pas le résultat ici mais juste la requête pour s'en reservir pour notre paginator (via knp-paginator)
+        return $query;
     }
 }

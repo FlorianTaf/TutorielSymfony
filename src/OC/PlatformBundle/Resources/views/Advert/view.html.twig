@@ -48,7 +48,7 @@
     {% if listAdvertSkills|length > 0 %}
         <div>
             <p>
-                <span style="font-weight: bold;">Cette annonce requiert les compétences suivantes : </br></span>
+                <span style="font-weight: bold;">Cette annonce requiert les compétences suivantes : <br></span>
                 {% for advertSkill in listAdvertSkills %}
                     {{ advertSkill.skill.name }}, niveau : {{ advertSkill.level }} {% if not loop.last %},</br>{% endif %}
                 {% endfor %}
@@ -68,16 +68,6 @@
         <a href="{{ path('oc_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
             <i class="glyphicon glyphicon-trash"></i>
             Supprimer l'annonce
-        </a>
-
-        {# Test du bouton pour modifier l'image#}
-        <a href="{{ path('oc_platform_edit_image', {'id': advert.id}) }}" class="btn btn-default">
-            <i class="glyphicon glyphicon-edit"></i>
-            Modifier l'image
-        </a>
-        <a href="{{ path('oc_platform_postuler', {'id': advert.id}) }}" class="btn btn-default">
-            <i class="glyphicon glyphicon-edit"></i>
-            Postuler à l'annonce
         </a>
     </p>
 {% endblock %}

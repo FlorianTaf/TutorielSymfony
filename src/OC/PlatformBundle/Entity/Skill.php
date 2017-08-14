@@ -13,8 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Skill
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -22,12 +20,9 @@ class Skill
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-
 
     /**
      * Get id
@@ -61,5 +56,12 @@ class Skill
     public function getName()
     {
         return $this->name;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->skillAdverts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 }

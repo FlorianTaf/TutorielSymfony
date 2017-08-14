@@ -24,16 +24,6 @@ class Advert
     }
 
     /**
-     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
-     */
-    private $applications; //À noter le "s", une annonce est liée à plusieurs candidatures
-    /**
-     * @ORM\ManyToMany(targetEntity="OC\PlatformBundle\Entity\Category", cascade={"persist"})
-     * @ORM\JoinTable(name="oc_advert_category")
-     */
-    private $categories;
-
-    /**
      *
      * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
      */
@@ -81,6 +71,17 @@ class Advert
      * @ORM\Column(name="published", type="boolean")
      */
     private $published;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="OC\PlatformBundle\Entity\Category", cascade={"persist"})
+     * @ORM\JoinTable(name="oc_advert_category")
+     */
+    private $categories;
+
+    /**
+     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+     */
+    private $applications; //À noter le "s", une annonce est liée à plusieurs candidatures
 
     /**
      * @ORM\Column(name="update_at", type="datetime", nullable=true)
@@ -418,5 +419,29 @@ class Advert
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Advert
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

@@ -31,13 +31,6 @@
                 {% endblock %}
             </div>
 
-            {# On affiche les messages flash apprès la tentative d'accès à la page de contact #}
-            <div>
-                {% for message in app.session.flashbag.get('notice') %}
-                    <p><span style=" color: red;">Message flash : {{ message }}</span></p>
-                {% endfor %}
-            </div>
-            
             {% block core_menu_gauche_block %}
             <div id="menu" class="col-md-3">
                 <h3>Formulaire de contact</h4>

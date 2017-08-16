@@ -37,3 +37,8 @@ oc_platform_accueil_core:
     path: ../
     defaults:
         _controller: OCPlatformBundle:Advert:retourAccueilCore
+
+oc_platform_purge:
+    path:   /purge/{days}
+    defaults:
+        _controller: OCPlatformBundle:Advert:purge

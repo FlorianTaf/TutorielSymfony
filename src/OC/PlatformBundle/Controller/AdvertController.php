@@ -119,7 +119,7 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
         }
 
-        foreach($advert->getCategories() as $category){
+        foreach ($advert->getCategories() as $category) {
             $advert->removeCategory($category);
         }
 
@@ -144,5 +144,22 @@ class AdvertController extends Controller
             //Tout l'intérêt est ici: le contrôleur passe les variables nécessaires au template
             'listAdverts' => $listAdverts
         ));
+    }
+
+    /**
+     * @param int $days Paramètre pour la requête
+     * @param Request $request Pour utiliser une variable de session et afficher le nombre d'annonces supprimées
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function purgeAction($days, Request $request)
+    {
+        $nBAdvertsDateDelete = $this->container->get('oc_platform.purger.purgerAdvert')->purgeAdvertsDate($days);
+
+        if ($nBAdvertsDateDelete != 0) {
+            $request->getSession()->getFlashBag()->add('notice', 'Vous venez de supprimer ' . $nBAdvertsDateDelete . ' annonce(s).');
+        }
+
+        //On retourne le nombre d'annonces supprimées
+        return $this->redirectToRoute('oc_platform_home');
     }
 }

@@ -11,11 +11,13 @@
 {% block ocplatform_body %}
 
     {# Message flash qui s'affiche si on a supprimé une annonce #}
-    <div>
-        {% for message in app.session.flashbag.get('info') %}
-            <p><span style="color: red;">Message flash : {{ message }}</span></p>
-        {% endfor %}
-    </div>
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="alert alert-info">Message flash : {{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.session.flashbag.get('notice') %}
+        <div class="alert alert-info">{{ message }}</div>
+    {% endfor %}
 
     <h2>Liste des annonces</h2>
 

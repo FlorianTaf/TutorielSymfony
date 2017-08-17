@@ -4,8 +4,11 @@
 
 namespace OC\PlatformBundle\Controller;
 
+use OC\PlatformBundle\Form\AdvertType;
+use OC\PlatformBundle\Form\AdvertEditType;
 use OC\PlatformBundle\OCPlatformBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller; //Ne pas oublier ce use !!!
+
 use Symfony\Component\HttpFoundation\Request; //Pour récupérer un objet Request
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -14,6 +17,7 @@ use OC\PlatformBundle\Entity\Image; //Ne pas oublier ce use pour pouvoir utilise
 use OC\PlatformBundle\Entity\Application; //Ne pas oublier ce use pour pouvoir utiliser notre entité Application
 use OC\PlatformBundle\Entity\AdvertSkill; //Ne pas oublier ce use pour pouvoir utiliser notre entité AdvertSkill
 use OC\PlatformBundle\Repository\AdvertRepository;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class AdvertController extends Controller
 {
@@ -74,37 +78,66 @@ class AdvertController extends Controller
 
     public function addAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        //On crée notre objet Advert
+        $advert = new Advert();
 
-        //On ne sait toujours pas gérer le formulaire, cela viendra à la prochaine partie
+        //On crée le FormBuilder gr$ace au service form factory
+        //$form = $this->get('form.factory')->create(AdvertType::class, $advert);
+        $form = $this->createForm(AdvertType::class, $advert);
 
+        //Pour l'instant, pas de candidatures, catégories, etc., on les gèrera plus tard
+
+        //Si la requête est en POST
         if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée');
-            //Puis on redirige vers la visualisation de cette annonce
-            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+            //On fait le lien Requête <-> Formulaire
+            //À partir de maintenant, la variable $advert contient les valeurs entrées dans le formulaire par l'utilisateur
+            $form->handleRequest($request);
+
+            //On vérifie que les valeurs entrées sont correctes
+            if($form->isValid()){
+                //On enregistre notre objet $advert dans la BDD, par exemple
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($advert);
+                $em->flush();
+
+                $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée');
+
+                //On redirige vers la page de visualisation de l'annonce nouvellement créée
+                return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+            }
         }
 
-        return $this->render('OCPlatformBundle:Advert:add.html.twig');
+        return $this->render('OCPlatformBundle:Advert:add.html.twig', array('form' => $form->createView()));
     }
 
     public function editAction($id, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        //On récupère l'annonce $id
-        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+        $advert = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('OCPlatformBundle:Advert')
+            ->find($id);
 
         if ($advert === null) {
             throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
         }
 
+        $form = $this->createForm(AdvertEditType::class, $advert);
+
         if ($request->isMethod('POST')) {
-            $session = $request->getSession();
-            $session->getSession()->getFlashBag()->add('notice', 'L\'annonce n°' . $id . ' sera modifiée quand on maîtrisera la BDD.');
-            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+            $form->handleRequest($request);
+
+            if($form->isValid()){
+                $em = $this->getDoctrine()->getManager();
+                $advert->setUpdatedAt(new \DateTime());
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'L\'annonce n°' . $id . ' a bien été modifiée.');
+                return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+            }
         }
 
         return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-            'advert' => $advert
+            'advert' => $advert,
+            'form' => $form->createView()
         ));
     }
 
@@ -119,16 +152,19 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
         }
 
-        foreach ($advert->getCategories() as $category) {
-            $advert->removeCategory($category);
+        //On crée un formulaire vide, qui ne contiendra que le champ CSRF
+        //Cela permet de protéger la suppression d'annonce contre cette faille
+        $form = $this->get('form.factory')->create();
+
+        if($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $em->remove($advert);
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('info', "L'annonce a bien été supprimée.");
+            return $this->redirectToRoute('oc_platform_home');
         }
 
-        $em->flush();
-
-        $session = $request->getSession();
-        $session->getSession()->getFlashBag()->add('notice', 'Les catégories liées à l\'annonce ont bien été supprimées');
-
-        return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+        return $this->render('OCPlatformBundle:Advert:delete.html.twig', array('advert' => $advert,
+        'form' => $form->createView()));
     }
 
     public function menuAction()

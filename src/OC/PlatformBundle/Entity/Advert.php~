@@ -84,12 +84,14 @@ class Advert
     private $applications; //À noter le "s", une annonce est liée à plusieurs candidatures
 
     /**
-     * @ORM\Column(name="update_at", type="datetime", nullable=true)
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @ORM\Column(name="nb_application", type="integer")
+     * @ORM\Column(name="nb_applications", type="integer")
      */
     private $nbApplications = 0;
 
@@ -443,5 +445,29 @@ class Advert
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Advert
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

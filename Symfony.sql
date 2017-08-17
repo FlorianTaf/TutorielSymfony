@@ -93,6 +93,7 @@ CREATE TABLE `oc_application` (
   `advert_id` int(11) NOT NULL,
   `author` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `content` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -100,17 +101,17 @@ CREATE TABLE `oc_application` (
 -- Contenu de la table `oc_application`
 --
 
-INSERT INTO `oc_application` (`id`, `advert_id`, `author`, `content`, `date`) VALUES
-(1, 1, 'Roger', 'Bonjour ,je postule pour l\'offre de "Développeur Symfony"', '0000-00-00 00:00:00'),
-(2, 1, 'Bertrand', 'Bonjour ,je postule pour l\'offre de "Développeur Android"', '0000-00-00 00:00:00'),
-(3, 1, 'Maxime', 'Bonjour ,je postule pour l\'offre de "Développeur HTML/CSS"', '0000-00-00 00:00:00'),
-(4, 2, 'Kévin', 'Bonjour ,je postule pour l\'offre de "Intégrateur"', '0000-00-00 00:00:00'),
-(5, 3, 'Marion', 'Bonjour ,je postule pour l\'offre de "Ingénieur Réseau"', '0000-00-00 00:00:00'),
-(6, 7, 'Amélie', 'Bonjour ,je postule pour l\'offre de "Développeur Eclipse"', '0000-00-00 00:00:00'),
-(7, 8, 'Yohann', 'Bonjour ,je postule pour l\'offre de "Développeur Swift"', '0000-00-00 00:00:00'),
-(8, 9, 'Olivier', 'Bonjour ,je postule pour l\'offre de "Développeur javascript"', '0000-00-00 00:00:00'),
-(9, 9, 'Brigitte', 'Bonjour ,je postule pour l\'offre de "Intégrateur expérimenté"', '0000-00-00 00:00:00'),
-(10, 10, 'Nicolas', 'Bonjour ,je postule pour l\'offre de "Technicien réseau"', '0000-00-00 00:00:00');
+INSERT INTO `oc_application` (`id`, `advert_id`, `author`, `content`, `email`, `date`) VALUES
+(1, 1, 'Roger', 'Bonjour ,je postule pour l\'offre de "Développeur Symfony"', 'roger@roger.fr', '0000-00-00 00:00:00'),
+(2, 1, 'Bertrand', 'Bonjour ,je postule pour l\'offre de "Développeur Android"', 'bertrand@bertrand.fr', '0000-00-00 00:00:00'),
+(3, 1, 'Maxime', 'Bonjour ,je postule pour l\'offre de "Développeur HTML/CSS"', 'maxime@maxime.fr', '0000-00-00 00:00:00'),
+(4, 2, 'Kévin', 'Bonjour ,je postule pour l\'offre de "Intégrateur"', 'kevin@kevin.fr', '0000-00-00 00:00:00'),
+(5, 3, 'Marion', 'Bonjour ,je postule pour l\'offre de "Ingénieur Réseau"', 'marion@marion.fr', '0000-00-00 00:00:00'),
+(6, 7, 'Amélie', 'Bonjour ,je postule pour l\'offre de "Développeur Eclipse"', 'amelie@amelie.fr', '0000-00-00 00:00:00'),
+(7, 8, 'Yohann', 'Bonjour ,je postule pour l\'offre de "Développeur Swift"', 'yohann@yohann.fr', '0000-00-00 00:00:00'),
+(8, 9, 'Olivier', 'Bonjour ,je postule pour l\'offre de "Développeur javascript"', 'olivier@olivier.fr', '0000-00-00 00:00:00'),
+(9, 9, 'Brigitte', 'Bonjour ,je postule pour l\'offre de "Intégrateur expérimenté"', 'brigitte@brigitte.fr', '0000-00-00 00:00:00'),
+(10, 10, 'Nicolas', 'Bonjour ,je postule pour l\'offre de "Technicien réseau"', 'nicolas@nicolas.fr', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 

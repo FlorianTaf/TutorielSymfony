@@ -27,3 +27,14 @@ services:
             - "@doctrine.orm.entity_manager"
         requirements:
             days: \d+
+
+    oc_platform.validator.antiflood:                                                                                              # Le nom du service
+        class: OC\PlatformBundle\Validator\AntifloodValidator                                                                     # La classe du service, ici notre validateur déjà crée
+        arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@oc_platform.antiflood.antiflood_message"]                 # Les données qu'on injecte au service, ici la requête et l'EntityManager
+        tags:
+            - { name: validator.constraint_validator, alias: oc_platform_antiflood }                                              # C'est avec l'alias qu'on retrouvera le service
+
+    oc_platform.antiflood.antiflood_message:
+        class: OC\PlatformBundle\Antiflood\AntifloodMessage
+        arguments:
+            - "@doctrine.orm.entity_manager"

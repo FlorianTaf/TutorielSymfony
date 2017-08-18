@@ -4,10 +4,20 @@
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
-    Ajouter une annonce - {{ parent() }}   
+    Ajouter une annonce - {{ parent() }}
 {% endblock %}
 
 {% block ocplatform_body %}
+    <ul>
+        {% if listErrors is defined %}
+            {% for error in listErrors %}
+                <li>
+                    {{ error }}
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+
     <h2>Ajouter une annonce</h2>
 
     {{ include("OCPlatformBundle:Advert:form.html.twig") }}

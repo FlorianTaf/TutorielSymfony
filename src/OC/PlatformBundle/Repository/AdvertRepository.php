@@ -41,6 +41,15 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('days', $days)
             ->andWhere('a.applications IS EMPTY')
             ->getQuery();
+        return $query->getResult();
+    }
+
+    public function findByIp($ip)
+    {
+        $query = $this->createQueryBuilder('a')
+            ->where('a.ip = :ip')
+            ->setParameter('ip', $ip)
+            ->getQuery();
 
         return $query->getResult();
     }

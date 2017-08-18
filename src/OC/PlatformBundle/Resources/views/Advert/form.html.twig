@@ -8,11 +8,6 @@
     {# Les erreurs générales du formulaire. #}
     {{ form_errors(form) }}
 
-    {% if form.date is defined %}
-        {# Génération du label + error + widget pour un champ. #}
-        {{ form_row(form.date) }}
-    {% endif %}
-
     {# Génération manuelle et éclatée : #}
     <div class="form-group">
         {# Génération du label. #}
@@ -44,7 +39,6 @@
     {% endif %}
 
     {{ form_row(form.categories) }}
-    <a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a>
 
     {# Pour le bouton, pas de label ni d'erreur, on affiche juste le widget #}
     {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}

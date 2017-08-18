@@ -64,10 +64,15 @@ class AdvertController extends Controller
             ->getRepository('OCPlatformBundle:Application')
             ->findBy(array('advert' => $advert));
 
+        $date = new \DateTime();
+        $date = $date->getTimestamp();
+        var_dump($date);
+
         //On récupère la liste des AdvertSkill
         $listAdvertSkills = $em
             ->getRepository('OCPlatformBundle:AdvertSkill')
             ->getSkillsByAdvert($id);
+
 
         //On renvoie avec l'annonce et les candidatures liées à cette annonce
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
@@ -94,9 +99,12 @@ class AdvertController extends Controller
             $form->handleRequest($request);
 
             //On vérifie que les valeurs entrées sont correctes
-            if($form->isValid()){
+            if ($form->isValid()) {
                 //On enregistre notre objet $advert dans la BDD, par exemple
                 $em = $this->getDoctrine()->getManager();
+                $advert->setIp($request->getClientIp());
+                //On définit la date de base à la date actuelle
+                $advert->setDate(new \DateTime());
                 $em->persist($advert);
                 $em->flush();
 
@@ -107,6 +115,7 @@ class AdvertController extends Controller
             }
         }
 
+        $ip2 = $request->getClientIp();
         return $this->render('OCPlatformBundle:Advert:add.html.twig', array('form' => $form->createView()));
     }
 
@@ -126,7 +135,7 @@ class AdvertController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if($form->isValid()){
+            if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $advert->setUpdatedAt(new \DateTime());
                 $em->flush();
@@ -156,7 +165,7 @@ class AdvertController extends Controller
         //Cela permet de protéger la suppression d'annonce contre cette faille
         $form = $this->get('form.factory')->create();
 
-        if($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em->remove($advert);
             $em->flush();
             $request->getSession()->getFlashBag()->add('info', "L'annonce a bien été supprimée.");
@@ -164,7 +173,7 @@ class AdvertController extends Controller
         }
 
         return $this->render('OCPlatformBundle:Advert:delete.html.twig', array('advert' => $advert,
-        'form' => $form->createView()));
+            'form' => $form->createView()));
     }
 
     public function menuAction()

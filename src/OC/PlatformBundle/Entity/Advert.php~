@@ -6,12 +6,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use OC\PlatformBundle\Validator\Antiflood;
+
 /**
  * Advert
  *
  * @ORM\Table(name="oc_advert")
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\AdvertRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields="title", message="Une annonce existe déjà avec ce titre.")
  */
 class Advert
 {
@@ -24,8 +31,8 @@ class Advert
     }
 
     /**
-     *
-     * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
+     * @Assert\Valid()
+     * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist", "remove"})
      */
     private $image;
 
@@ -40,29 +47,30 @@ class Advert
 
     /**
      * @var \DateTime
-     *
+     * @Assert\DateTime()
      * @ORM\Column(name="date", type="datetime")
      */
     private $date;
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=10)
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="author", type="string", length=255)
+     * @Assert\Length(min=2)
+     * @ORM\Column(name="author", type="string", length=255, unique=true)
      */
     private $author;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="content", type="text")
+     * @Antiflood()
      */
     private $content;
 
@@ -105,6 +113,11 @@ class Advert
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
     private $slug;
+
+    /**
+     * @ORM\Column(name="ip", type="string", length=255)
+     */
+    private $ip;
 
     /**
      * Get id
@@ -469,5 +482,19 @@ class Advert
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function isContentValid(ExecutionContextInterface $context){
+        $forbiddenWords = array('démotivation', 'abandon');
+
+        if(preg_match('#'.implode('|', $forbiddenWords).'#', $this->getContent())){
+            $context
+                ->buildViolation('Contenu invalide car il contient un ou des mot(s) interdits.')
+                ->atPath('content')
+                ->addViolation();
+        }
     }
 }

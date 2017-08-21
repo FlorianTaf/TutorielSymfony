@@ -6,18 +6,24 @@ namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\Form\AdvertType;
 use OC\PlatformBundle\Form\AdvertEditType;
-use OC\PlatformBundle\OCPlatformBundle;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller; //Ne pas oublier ce use !!!
 
 use Symfony\Component\HttpFoundation\Request; //Pour récupérer un objet Request
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use OC\PlatformBundle\Entity\Advert; //Ne pas oublier ce use pour pouvoir utiliser notre entité Advert
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security; //Pour utiliser les annotations @Security
+
+//Je sais plus si ces "use" me servent
+use OC\PlatformBundle\OCPlatformBundle;
 use OC\PlatformBundle\Entity\Image; //Ne pas oublier ce use pour pouvoir utiliser notre entité Image
 use OC\PlatformBundle\Entity\Application; //Ne pas oublier ce use pour pouvoir utiliser notre entité Application
 use OC\PlatformBundle\Entity\AdvertSkill; //Ne pas oublier ce use pour pouvoir utiliser notre entité AdvertSkill
 use OC\PlatformBundle\Repository\AdvertRepository;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class AdvertController extends Controller
 {
@@ -43,6 +49,11 @@ class AdvertController extends Controller
             $findAdverts,
             $page,
             3);
+
+        $userManager = $this->get('fos_user.user_manager');
+        $user = $userManager->findUserBy(array('username' => 'Florian'));
+        $user->setRoles(array('ROLE_AUTEUR'));
+        $userManager->updateUser($user);
 
         return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
             'listAdverts' => $listAdverts));
@@ -81,6 +92,11 @@ class AdvertController extends Controller
             'listAdvertSkills' => $listAdvertSkills));
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @Security("has_role('ROLE_AUTEUR')")
+     */
     public function addAction(Request $request)
     {
         //On crée notre objet Advert

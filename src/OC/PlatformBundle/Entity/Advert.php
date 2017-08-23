@@ -120,6 +120,12 @@ class Advert
     private $ip;
 
     /**
+     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", inversedBy="adverts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    /**
      * Get id
      *
      * @return int
@@ -520,5 +526,29 @@ class Advert
                 ->atPath('content')
                 ->addViolation();
         }
+    }
+
+    /**
+     * Set user
+     *
+     * @param \OC\UserBundle\Entity\User $user
+     *
+     * @return Advert
+     */
+    public function setUser(\OC\UserBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \OC\UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

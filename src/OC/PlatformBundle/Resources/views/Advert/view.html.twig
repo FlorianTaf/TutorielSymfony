@@ -19,7 +19,7 @@
         {% endif %}
     </div>
     <h2>{{ advert.title }} (offre n°{{ advert.id }})</h2>
-    <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
+    <i>Par l'auteur {{ advert.author }} (qui est l'utilisateur {{ advert.user.username }} en BDD), le {{ advert.date|date('d/m/Y') }}</i>
 
     <div class="well">
         {{ advert.content }}

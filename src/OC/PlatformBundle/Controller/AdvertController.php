@@ -4,6 +4,8 @@
 
 namespace OC\PlatformBundle\Controller;
 
+use OC\PlatformBundle\Event\MessagePostEvent;
+use OC\PlatformBundle\Event\PlatformEvents;
 use OC\PlatformBundle\Form\AdvertType;
 use OC\PlatformBundle\Form\AdvertEditType;
 
@@ -116,9 +118,19 @@ class AdvertController extends Controller
 
             //On vérifie que les valeurs entrées sont correctes
             if ($form->isValid()) {
+                //On fait cette ligne pour mettre à jour notre user (car on ne le fait pas remplir dans le formulaire)
+                $advert->setUser($this->getUser());
+                //On crée l'évènement avec ces 2 arguments
+                $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+                //On déclenche l'évènement
+                $this->get('event_dispatcher')->dispatch(PlatformEvents::POST_MESSAGE, $event);
+                //On récupère ce qui a été modifié par le ou les listeners, ici le message
+                $advert->setContent($event->getMessage());
+
                 //On enregistre notre objet $advert dans la BDD, par exemple
                 $em = $this->getDoctrine()->getManager();
                 $advert->setIp($request->getClientIp());
+                $advert->setUser($advert->getUser());
                 //On définit la date de base à la date actuelle
                 $advert->setDate(new \DateTime());
                 $em->persist($advert);

@@ -27,6 +27,7 @@ class LoadUser implements FixtureInterface
             //Le nom d'utilisateur et le mdp sont identiques pour l'instant
             $user->setUsername($name);
             $user->setPassword($name);
+            $user->setEmail($name);
 
             //On ne se sert pas du salt pour l'instant
             $user->setSalt('');

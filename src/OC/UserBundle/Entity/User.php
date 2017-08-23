@@ -21,5 +21,43 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-}
 
+    /**
+     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Advert", mappedBy="user")
+     */
+    private $adverts;
+
+    /**
+     * Add advert
+     *
+     * @param \OC\PlatformBundle\Entity\Advert $advert
+     *
+     * @return User
+     */
+    public function addAdvert(\OC\PlatformBundle\Entity\Advert $advert)
+    {
+        $this->adverts[] = $advert;
+
+        return $this;
+    }
+
+    /**
+     * Remove advert
+     *
+     * @param \OC\PlatformBundle\Entity\Advert $advert
+     */
+    public function removeAdvert(\OC\PlatformBundle\Entity\Advert $advert)
+    {
+        $this->adverts->removeElement($advert);
+    }
+
+    /**
+     * Get adverts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAdverts()
+    {
+        return $this->adverts;
+    }
+}

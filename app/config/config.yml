@@ -11,6 +11,9 @@ parameters:
 
 framework:
     #esi: ~
+    # On définit la langue par défaut pour le service de traduction
+    # Ce qui n'est pas disponible dans la locale de l'utilisateur
+    # sera affiché dans celle spécifiée ici
     translator: { fallbacks: ['%locale%'] }
     secret: '%secret%'
     router:
@@ -22,6 +25,8 @@ framework:
     #serializer: { enable_annotations: true }
     templating:
         engines: ['twig']
+    # On initialise la locale de requête, celle par défaut pour
+    # l'internaute arrivant pour la toute première fois sur votre site
     default_locale: '%locale%'
     trusted_hosts: ~
     session:

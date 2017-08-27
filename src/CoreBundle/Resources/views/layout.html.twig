@@ -23,20 +23,20 @@
                 Connecté en tant que {{ app.user.username }}
                 -
                 <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-                {% else %}
+            {% else %}
                 <a href="{{ path('fos_user_security_login') }}">Connexion</a>
             {% endif %}
         {% endblock %}
         {% block core_header %}
-        <h1>Page d'accueil principale du site</h1>
-        <p>
-            C'est le 1er exercice sérieux sur Symfony.
-        </p>
-        <p>
-            <a class="btn btn-primary btn-lg" href="{{ path('oc_platform_home') }}">
-                Aller sur la plateforme d'annonces. »
-            </a>
-        </p>
+            <h1>Page d'accueil principale du site</h1>
+            <p>
+                C'est le 1er exercice sérieux sur Symfony.
+            </p>
+            <p>
+                <a class="btn btn-primary btn-lg" href="{{ path('oc_platform_home') }}">
+                    Aller sur la plateforme d'annonces. »
+                </a>
+            </p>
         {% endblock %}
     </div>
 

@@ -12,9 +12,12 @@ use OC\PlatformBundle\Form\AdvertEditType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller; //Ne pas oublier ce use !!!
 
 use Symfony\Component\HttpFoundation\Request; //Pour récupérer un objet Request
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use OC\PlatformBundle\Entity\Advert; //Ne pas oublier ce use pour pouvoir utiliser notre entité Advert
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security; //Pour utiliser les annotations @Security
 
@@ -61,15 +64,18 @@ class AdvertController extends Controller
             'listAdverts' => $listAdverts));
     }
 
-    public function viewAction($id)
+    public function viewAction(Advert $advert)
     {
         //Equivalent des 2 méthodes juste en-dessous
-        $em = $this->getDoctrine()->getManager();
-        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
 
+        $em = $this->getDoctrine()->getManager();
+        //$advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+
+        /*
         if ($advert === null) {
             throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
         }
+        */
 
         //On récupère la liste des candidatures de cette annonce
 
@@ -77,14 +83,10 @@ class AdvertController extends Controller
             ->getRepository('OCPlatformBundle:Application')
             ->findBy(array('advert' => $advert));
 
-        $date = new \DateTime();
-        $date = $date->getTimestamp();
-        var_dump($date);
-
         //On récupère la liste des AdvertSkill
         $listAdvertSkills = $em
             ->getRepository('OCPlatformBundle:AdvertSkill')
-            ->getSkillsByAdvert($id);
+            ->getSkillsByAdvert($advert->getId());
 
 
         //On renvoie avec l'annonce et les candidatures liées à cette annonce
@@ -234,5 +236,20 @@ class AdvertController extends Controller
 
         //On retourne le nombre d'annonces supprimées
         return $this->redirectToRoute('oc_platform_home');
+    }
+
+    public function translationAction($name)
+    {
+        return $this->render('OCPlatformBundle:Advert:translation.html.twig', array('name' => $name));
+    }
+
+    /**
+     * @ParamConverter("json")
+     * @param $json
+     * @return Response
+     */
+    public function ParamConverterAction($json)
+    {
+        return new Response(print_r($json, true));
     }
 }

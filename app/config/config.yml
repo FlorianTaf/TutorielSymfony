@@ -107,3 +107,13 @@ fos_user:
     from_email:
         address: "florian.taffaneau@laposte.net"
         sender_name: "Altoros le druide tank"
+
+#Assetic
+assetic:
+    debug: '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~
+        jsqueeze: ~
+        scssphp:
+            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
